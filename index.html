@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/vue@3" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <!-- ... -->
+    <section>
+      <header>
+        <h1>...</h1>
+      </header>
+      <main>
+        <article id="">
+          <h2>...</h2>
+        </article>
+      </main>
+    </section>
+
+    <!-- Before Class -->
+    <section id="app">
+      <header>
+        <h1>Before Class</h1>
+      </header>
+      <main>
+        <article>
+          <input type="text" id="goal" v-model="goalInput" />
+          <button v-on:click="addGoal">ADD</button>
+          <ul v-if="goalList.length>=1">
+            <li v-for="goal in goalList">
+              <a v-if="goal.link" :href="goal.link" style="display: flex; justify-content: space-between; text-decoration: none; color: #f07">
+                {{ goal.course }}
+                <div>>>></div>
+              </a>
+              <div v-else>{{ goal.course }}</div>
+            </li>
+          </ul>
+        </article>
+      </main>
+    </section>
+
+    <!-- Dom -->
+    <section>
+      <header>
+        <h1>Vue with Dom</h1>
+      </header>
+      <main>
+        <article id="user-goal">
+          <h2>Dom 交互</h2>
+          <p>data: {{ data }}</p>
+          <p>123 * 456: {{ 123 * 456 }}</p>
+          <p>Math.random(): {{ Math.random() }}</p>
+          <p>true ? "X" : "O": {{ true ? "X" : "O" }}</p>
+          <p>add(7, 2): {{ add(7, 2) }}</p>
+          <p>:href="goalLink" <a :href="goalLink">Link</a></p>
+        </article>
+        <article id="assignment">
+          <h2>Pratice</h2>
+          <p>YOUR NAME: {{ name }}</p>
+          <p>YOUR AGE: {{ age }}</p>
+          <p>YOUR AGE in 5 years: {{ age + 5 }}</p>
+          <p>Random Number 1: {{ Math.random() }}</p>
+          <p>Random Number 2: {{ favoriteNumber() }}</p>
+          <div>
+            <img :src="image" width="300" />
+          </div>
+          <input type="text" :value="name" />
+        </article>
+      </main>
+    </section>
+
+    <!-- 事件 Events -->
+    <section>
+      <header>
+        <h1>事件 Events</h1>
+      </header>
+      <main>
+        <article id="events">
+          <h2>Events in Action</h2>
+          <button @click="resulet++">加 1</button>
+          <button @click="sub(5)">減 5</button>
+          <!-- v-once：僅渲染元素和組件一次，並跳過之後的更新 -->
+          <div>
+            <span v-once>初值: {{ resulet }}</span>
+            <span>Resulet: {{ resulet }}</span>
+          </div>
+          <hr />
+          <!-- 
+          <input type="text" @input="setName($event, '乂')" /> -->
+          <!-- 雙向綁定，:value="name"
+          <input type="text" :value="name" @input="setName($event)" />
+          <button @click="resetInput">Reset</button> -->
+          <!-- v-model：雙向綁定，替代 :value="..."與 @input="..."" -->
+          <input type="text" v-model="name" />
+          <button @click="resetInput">Reset</button>
+          <p>名稱: {{ wing + name + wing }}</p>
+          <!-- .prevent = e.preventDefault(); 停止預設事件(送出表單/刷新頁面) -->
+          <hr />
+          <form @submit.prevent="submitForm">
+            <input type="text" placeholder="事件修飾符" />
+            <button>送出表單！</button>
+          </form>
+        </article>
+        <article id="praticeEvents">
+          <h2>Pratice</h2>
+          <button @click="showAlert('...')">Show Alert</button>
+          <hr />
+          <input type="text" @keydown="keyDownSet($event)" />
+          <p>KeyDown Output: {{ keyDownInput }}</p>
+          <hr />
+          <input type="text" @keyup.enter="enteredSet($event)" />
+          <p>Entered Output: {{ enteredInput }}</p>
+        </article>
+      </main>
+    </section>
+
+    <!-- computed & watch -->
+    <section>
+      <header>
+        <h1>computed & watch</h1>
+      </header>
+      <main>
+        <article id="vueComputed">
+          <h2>computed</h2>
+          <label> A: <input type="number" v-model="A" /> </label>
+          <label> B: <input type="number" v-model="B" /> </label>
+          <span>等於：{{ add }}</span>
+        </article>
+        <article id="vueWatch">
+          <h2>watch</h2>
+          <label>X: <input type="number" v-model="X" /> </label>
+          <p>Y: {{ Y }}</p>
+        </article>
+        <article id="praticeReactivity">
+          <h2>Pratice Reactivity</h2>
+          <button @click="add(5)">Add 5</button>
+          <button @click="add(1)">Add 1</button>
+          <p>Result: {{ result }}</p>
+        </article>
+      </main>
+    </section>
+
+    <!-- 動態樣式 Dynamic Styling -->
+    <section>
+      <header>
+        <h1>動態樣式 Dynamic Styling</h1>
+      </header>
+      <main>
+        <article id="styling">
+          <h2>Inline Styles</h2>
+          <span @click="selected('A')" class="demo" :style="{borderColor: selectA ? '#ff0077' : '#4fc08d'}">A</span>
+          <span @click="selected('B')" :class="selectB ? 'demo active' : 'demo'">B</span>
+          <span @click="selected('C')" :class="{ demo: true, active: selectC }">C</span>
+          <span @click="selected('D')" class="demo" :class="{ active: selectD }">D</span>
+          <span @click="selected('E')" :class="['demo', { active: selectE }]">E</span>
+          <span @click="selected('F')" class="demo" :class="boxFClass">F</span>
+        </article>
+        <article id="praticeDynamicStyling">
+          <h2>Pratice Dynamic Styling</h2>
+          <input type="number" max="5" min="0" v-model="boxColor" />
+          <button @click="changVisible">Toggle visible</button>
+          <p :class="['user' + boxColor, boxVisible]">Style me!</p>
+          <input type="text" placeholder="#000 pink red" v-model="setBackgroundColor" />
+          <p :style="{backgroundColor: setBackgroundColor}">Style me inline!</p>
+        </article>
+      </main>
+    </section>
+
+    <!-- Vue 條件句 -->
+    <section>
+      <header>
+        <h1>Vue 條件句</h1>
+      </header>
+      <main>
+        <article id="todoList">
+          <h2>Todo List</h2>
+          <input type="text" v-model="todo" />
+          <button @click="addTodo">Add</button>
+          <ul>
+            <li v-if="todos.length===0">Empty now, add some to do.</li>
+            <li v-else v-for="(item, index) in todos " :key="item" @click="removeTodo(index)">
+              {{ item }}
+              <input type="text" @click.stop />
+            </li>
+          </ul>
+          <h2>v-for遍歷陣列</h2>
+          <p v-for="(value, index) in ['v-for遍歷陣列', '可以取得(value, index)']">{{ value }} / {{ index }}</p>
+          <h2>v-for遍歷物件</h2>
+          <p v-for="(value, key, index) in { used: 'v-for遍歷物件', get: '可以取得(value, key, index)'}">{{ value }} / {{ key }} / {{ index }}</p>
+        </article>
+        <article id="praticeList">
+          <h2>Pratice v-for/v-show/v-if</h2>
+          <input type="text" v-model="item" />
+          <button @click="addLi">Add</button>
+          <button @click="showList = !showList">{{ showList ? "關閉" : "顯示" }}</button>
+          <ul v-show="showList">
+            <li v-for="item in items">{{ item }}</li>
+          </ul>
+        </article>
+      </main>
+    </section>
+
+    <!-- Play a game? -->
+    <section id="praticeGame">
+      <header>
+        <h1>遊戲</h1>
+      </header>
+      <main>
+        <article v-if="gameState != 1" class="setBoard">
+          <div v-if="gameState != 0" class="gameOverCount">
+            <h2 v-if="gameState === 2" class="win">戰勝！</h2>
+            <h2 v-if="gameState === 3" class="lose">戰敗！</h2>
+          </div>
+          <div>
+            <h2 v-if="gameState === 0">人物創建</h2>
+            <div v-if="gameState === 0">
+              <label>名字：<input type="text" v-model="playerName" /></label>
+              <hr />
+            </div>
+            <h3 v-if="gameState === 2">分配點數：🧪x{{ candy }}</h3>
+            <div class="playerPoint">
+              <span>
+                體力: {{ healthRandom }}
+                <button v-if="gameState != 0 && candy" @click="addPoint('health')">+</button>
+              </span>
+              <span>
+                力量: {{ atkRandom }}
+                <button v-if="gameState != 0 && candy" @click="addPoint('atk')">+</button>
+              </span>
+              <span>
+                爆發: {{ powRandom }}
+                <button v-if="gameState != 0 && candy" @click="addPoint('pow')">+</button>
+              </span>
+              <button v-if="gameState === 0" @click="dicePlayer">Dice</button>
+            </div>
+            <button @click="gameState = 1" :disabled="!readyToStart">
+              {{ gameState === 3 ? "再次挑戰" : (gameState === 0 ? "開始遊戲" : "下一關") }}
+            </button>
+          </div>
+        </article>
+        <article v-if="gameState != 1">
+          <h2>Lv. {{ stateLv }}</h2>
+          <div class="gameInfo">
+            <div>
+              <h3>{{ playerName ? playerName : "You" }}</h3>
+              <p>血量: {{ playerMaxHealth }}</p>
+              <p>傷害: {{ playerAtkMin }} - {{ playerAtkMax }}</p>
+              <p>耐力: {{ playerMaxPower }}</p>
+            </div>
+            <div>
+              <h3>Monster</h3>
+              <p>血量: {{ monsterMaxHealth }}</p>
+              <p>傷害: {{ monsterAtkMin }} - {{ monsterAtkMax }}</p>
+            </div>
+          </div>
+        </article>
+        <article v-if="gameState===1">
+          <div class="health">
+            <div>
+              <span>Monster</span>
+              <div :style="monsterHealthStyle"></div>
+              <span>{{ monsterHealth }}/{{monsterMaxHealth }}</span>
+            </div>
+            <div>
+              <span>{{ playerName }}</span>
+              <div :style="playerHealthStyle"></div>
+              <span>{{ playerHealth }}/{{ playerMaxHealth }}</span>
+            </div>
+            <div class="power">
+              <div :style="playerPowerStyle"></div>
+              <span>{{ playerPower }}/{{ playerMaxPower }}</span>
+            </div>
+          </div>
+          <div class="moving">
+            <button @click="round('attack')">平砍</button>
+            <button @click="round('heavyAttack')">重擊</button>
+            <button @click="round('recover')" :disabled="playerHealth === playerMaxHealth && playerPower === playerMaxPower">休息</button>
+            <button @click="round('healing')" :disabled="playerHealth === playerMaxHealth">治療</button>
+            <button @click="round('exit')">逃離</button>
+          </div>
+        </article>
+        <article v-if="gameState != 0">
+          <div class="gameLog">
+            <h3>戰鬥紀錄</h3>
+            <ul>
+              <li v-for="log in gameLogs" :class="log.move">{{ log.text }}</li>
+            </ul>
+          </div>
+        </article>
+      </main>
+    </section>
+
+    <!-- Vue 的運作原理 Behind The Scenes -->
+    <section>
+      <header>
+        <h1>運作原理 Behind The Scenes</h1>
+      </header>
+      <main>
+        <article id="proxy">
+          <h2>Proxy 更新 data</h2>
+          <p>用 Proxy概念做到動態更新(go see app.js)</p>
+        </article>
+        <article id="refs">
+          <h2>ref refs</h2>
+          <input type="text" ref="currentInput" />
+          <button @click="setText">set</button>
+          <p>{{ text }}</p>
+        </article>
+        <article id="lifeHooks">
+          <h2>生命週期</h2>
+          <input type="text" v-model="text" />
+          <p>{{ text }}</p>
+        </article>
+      </main>
+    </section>
+
+    <!-- Components 組件 -->
+    <section>
+      <header>
+        <h1>Components 組件</h1>
+      </header>
+      <main>
+        <article id="friendList">
+          <h2>Friend List</h2>
+          <ul>
+            <friend-contact v-for="friend in friends" :key="friend.id"></friend-contact>
+          </ul>
+        </article>
+      </main>
+    </section>
+  </body>
+</html>
