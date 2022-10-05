@@ -7,6 +7,7 @@
       <li><strong>Phone:</strong> {{ phone }}</li>
       <li><strong>Email:</strong> {{ email }}</li>
     </ul>
+    <button @click="$emit('delete-friend',id)">🗑</button>
   </li>
 </template>
 
@@ -51,7 +52,7 @@ export default {
 
   // 這裡的 emits不是必要的，寫這裡重要的是為了將散落在組件中的 $emit集中描寫，另外也可以針對個別 $emit做描述驗證
   // 1. 集中此組件中的 $emit
-  emits: ["toggle-favorite"],
+  emits: ["toggle-favorite", "delete-friend"],
   // 2. 對 $emit做規範/驗證
   // emits: {
   //   "toggle-favorite": function (id) {
@@ -76,6 +77,10 @@ export default {
       // this.favoriteFriend = !this.favoriteFriend;
       this.$emit("toggle-favorite", this.id);
     },
+    // 改到行內直接摳 $emit("delete-friend", this.id);
+    // deleteFriend() {
+    //   this.$emit("delete-friend", this.id);
+    // },
   },
 };
 </script>
