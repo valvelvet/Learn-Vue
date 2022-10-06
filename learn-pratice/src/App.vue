@@ -1,125 +1,62 @@
 <template>
-  <article>
-    <header>
-      <h1>Friends List</h1>
-    </header>
-    <new-friend class="new-friend" @add-new-friend="addNewFriend"></new-friend>
-    <ul>
-      <friend-conact
-        v-for="friend in friends"
-        :key="friend.id"
-        :id="friend.id"
-        :name="friend.name"
-        :phone="friend.phone"
-        :email="friend.email"
-        :is-favorite="friend.isFavorite"
-        @toggle-favorite="toggleFavorite"
-        @delete-friend="deleteFriend"
-      >
-      </friend-conact>
-    </ul>
-  </article>
+  <div>
+    <!-- <the-header></the-header> -->
+    <TheHeader />
+
+    <!-- 全局註冊 vs 局部註冊 -->
+    <!-- 局部註冊 -->
+    <badge-list></badge-list>
+    <user-info :full-name="activeUser.name" :info-text="activeUser.description" :role="activeUser.role"></user-info>
+
+    <!-- slot：訪問到子組件的狀態 -->
+    <!-- <course-goal>
+      <template  #default="courseGoal">
+        <h2>{{ courseGoal.title }}</h2>
+        <p>{{ courseGoal["goal-info"] }}</p>
+      </template>
+    </course-goal> -->
+    <course-goal #default="courseGoal">
+      <h2>{{ courseGoal.item.title }}</h2>
+      <p>{{ courseGoal.goalInfo }}</p>
+    </course-goal>
+  </div>
 </template>
 
 <script>
+// 局部註冊
+import TheHeader from "./components/TheHeader.vue";
+import BadgeList from "./components/BadgeList.vue";
+import UserInfo from "./components/UserInfo.vue";
+import CourseGoal from "./components/CourseGoal.vue";
+
 export default {
+  // 局部註冊
+  components: {
+    // "the-header": TheHeader,
+    // TheHeader: TheHeader,
+    TheHeader,
+    BadgeList,
+    UserInfo,
+    CourseGoal,
+  },
   data() {
     return {
-      friends: [
-        {
-          id: 1,
-          name: "Amy",
-          phone: "09-8765 4321",
-          email: "amy001@fake.mail.com",
-        },
-        {
-          id: 2,
-          name: "Bill",
-          phone: "01-2345 6789",
-          email: "bill002@fake.mail.com",
-        },
-        {
-          id: 3,
-          name: "Cali",
-          phone: "01-2345 6789",
-          email: "cali003@fake.mail.com",
-          isFavorite: true,
-        },
-      ],
+      activeUser: {
+        name: "Maximilian Schwarzmüller",
+        description: "Site owner and admin",
+        role: "admin",
+      },
     };
-  },
-  methods: {
-    toggleFavorite(friendId) {
-			console.log(this.friends);
-      const friend = this.friends.find((friend) => friend.id === friendId);
-      friend.isFavorite = !friend.isFavorite;
-    },
-    addNewFriend(newFriend) {
-      this.friends.push({
-        id: this.friends.length + 1,
-        ...newFriend,
-      });
-    },
-    deleteFriend(friendId) {
-			const friend = this.friends.find((friend) => friend.id === friendId);
-      this.friends.splice(friend,1);
-    },
   },
 };
 </script>
 
 <style>
-* {
-  box-sizing: border-box;
-}
-
 html {
-  font-family: "Jost", sans-serif;
+  font-family: sans-serif;
 }
 
 body {
   margin: 0;
-}
-
-header {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  border-radius: 0 0 10px 10px;
-  padding: 1rem;
-  background-color: #58004d;
-  color: white;
-  text-align: center;
-  width: 90%;
-  max-width: 500px;
-}
-article {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.new-friend {
-  width: 90%;
-  max-width: 500px;
-  margin: 1rem;
-}
-ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-article > ul {
-  width: 90%;
-  max-width: 500px;
-}
-li {
-  border: 1px solid #ccc;
-  margin: 1rem auto;
-  border-radius: 10px;
-  padding: 1rem;
-  text-align: center;
-  max-width: 40rem;
-}
-article > ul > li {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
 }
 </style>
