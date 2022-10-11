@@ -1,19 +1,19 @@
 <template>
   <nav>
-    <button
+    <BaseButton
       v-for="item in menu"
       :key="item"
       @click="changePage(item.component)"
-      :class="openingPage === item.component ? 'active' : ''"
+      :mode="openingPage === item.component ? 'active' : ''"
     >
       {{ item.lable }}
-    </button>
+    </BaseButton>
   </nav>
 </template>
 
 <script>
 export default {
-  props: { menu: Object,openingPage:String },
+  props: { menu: Object, openingPage: String },
   methods: {
     changePage(t) {
       this.$emit("changePage", t);
@@ -26,8 +26,8 @@ export default {
 nav {
   display: flex;
 }
-button {
-  position:unset;
+nav :deep(button) {
+  position: unset;
   width: auto;
   height: auto;
   border-radius: 50px;
@@ -36,11 +36,5 @@ button {
   padding: 0.5rem 1rem;
   background-color: #ffe;
   margin: 0 1rem;
-}
-button:hover {
-  background-color: #dd32;
-}
-button.active {
-  box-shadow: inset 0 2px 3px 2px #00000022;
 }
 </style>

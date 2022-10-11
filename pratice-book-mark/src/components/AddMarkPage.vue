@@ -1,19 +1,24 @@
 <template>
   <BaseCard>
-    <BaseTextInput :value="newMark.title" @onInput="updateData('title', $event)"> 書籤名稱 </BaseTextInput>
-    <BaseTextInput :value="newMark.text" @onInput="updateData('text', $event)"> 書籤簡介 </BaseTextInput>
-    <BaseTextInput :value="newMark.url" @onInput="updateData('url', $event)"> 網址 </BaseTextInput>
+    <form @submit.prevent="sub(newMark)">
+      <BaseTextInput :value="newMark.title" type="text" @onInput="updateData('title', $event)">
+        書籤名稱
+      </BaseTextInput>
+      <BaseTextInput :value="newMark.text" type="textarea" @onInput="updateData('text', $event)">
+        書籤簡介
+      </BaseTextInput>
+      <BaseTextInput :value="newMark.url" type="url" @onInput="updateData('url', $event)"> 網址 </BaseTextInput>
 
-    <teleport to="body">
-      <ErrorPopup v-if="popError" title="Input Error" @closePop="popError = false">{{ errorStr }}</ErrorPopup>
-    </teleport>
-    <button @click="addMark(newMark)">⤴</button>
+      <BaseButton type="submit">⤴</BaseButton>
+    </form>
   </BaseCard>
+  <BasePopup v-if="popError" title="Input Error" @closePop="popError = false">{{ errorStr }}</BasePopup>
 </template>
 
 <script>
 export default {
-  emits: ["addMark"],
+  inject: ["addMark"],
+
   data() {
     return {
       errorStr: "",
@@ -36,8 +41,11 @@ export default {
     updateData(key, data) {
       this.newMark[key] = data;
     },
-    addMark(newMark) {
+    sub(newMark) {
       this.errorStr = "";
+      this.newMark.title = this.newMark.title.trim();
+      this.newMark.text = this.newMark.text.trim();
+      this.newMark.url = this.newMark.url.trim();
       if (!this.newMark.title) this.errorStr += "請輸入 書籤名稱\n";
       if (!this.newMark.text) this.errorStr += "請輸入 書籤簡介\n";
       if (!this.newMark.url) this.errorStr += "請輸入 網址\n";
@@ -45,7 +53,7 @@ export default {
         this.popError = true;
       } else {
         this.initInput();
-        this.$emit("addMark", newMark);
+        this.addMark(newMark);
       }
     },
   },

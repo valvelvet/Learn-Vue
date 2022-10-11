@@ -1,17 +1,19 @@
 <template>
-  <div>
-    <dialog open>
-      <header>
-        <h2>{{ title }}</h2>
-      </header>
-      <main>
-        <p>
-          <slot></slot>
-        </p>
-      </main>
-      <button @click="$emit('closePop')">✖️</button>
-    </dialog>
-  </div>
+  <teleport to="body">
+    <div @click.stop="$emit('closePop')">
+      <dialog open>
+        <header>
+          <h2>{{ title }}</h2>
+        </header>
+        <main>
+          <p>
+            <slot></slot>
+          </p>
+        </main>
+        <BaseButton @click.stop="$emit('closePop')">✖️</BaseButton>
+      </dialog>
+    </div>
+  </teleport>
 </template>
 
 <script>

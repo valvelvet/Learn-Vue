@@ -5,14 +5,14 @@
       <TheMenu :menu="menu" @changePage="changePage" :openingPage="page"></TheMenu>
     </BaseCard>
     <keep-alive>
-      <component :is="page" :bookMarks="bookMarks" @deleteBookMark="deleteBookMark" @addMark="addMark"></component>
+      <component :is="page"></component>
     </keep-alive>
   </main>
 </template>
 
 <script>
-import TheHeader from "./components/TheHeader.vue";
-import TheMenu from "./components/TheMenu.vue";
+import TheHeader from "./components/layouts/TheHeader.vue";
+import TheMenu from "./components/layouts/TheMenu.vue";
 import BookMarkPage from "./components/BookMarkPage.vue";
 import AddMarkPage from "./components/AddMarkPage.vue";
 
@@ -30,7 +30,6 @@ export default {
         { component: "AddMarkPage", lable: "新增書籤" },
       ],
       page: "BookMarkPage",
-
       bookMarks: [
         {
           id: 1,
@@ -47,9 +46,19 @@ export default {
       ],
     };
   },
+  provide() {
+    return {
+      bookMarks: this.bookMarks,
+      deleteBookMark: this.deleteBookMark,
+      addMark: this.addMark,
+    };
+  },
   methods: {
     deleteBookMark(markId) {
-      this.bookMarks = this.bookMarks.filter((item) => item.id !== markId);
+      this.bookMarks.splice(
+        this.bookMarks.findIndex((item) => item.id === markId),
+        1
+      );
     },
     changePage(t) {
       this.page = t;
@@ -75,23 +84,6 @@ html {
   padding: 0;
   color: #555;
   box-sizing: border-box;
-}
-button {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  display: block;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  border: none;
-  box-shadow: 0 2px 4px 2px #00000022;
-}
-button:hover {
-  background-color: #00000006;
-  box-shadow: inset 0 2px 3px 2px #00000022;
+  list-style: none;
 }
 </style>

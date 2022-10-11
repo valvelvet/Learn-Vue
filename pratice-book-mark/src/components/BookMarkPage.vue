@@ -1,16 +1,19 @@
 <template>
-  <BaseCard v-for="bookMark in bookMarks" :key="bookMark.id">
-    <h2>{{ bookMark.title }}</h2>
-    <button @click="$emit('deleteBookMark', bookMark.id)">✖️</button>
-    <p>{{ bookMark.text }}</p>
-    <a :href="bookMark.url">Link</a>
-  </BaseCard>
+  <ul>
+    <li v-for="bookMark in bookMarks" :key="bookMark.id">
+      <BaseCard>
+        <h2>{{ bookMark.title }}</h2>
+        <p>{{ bookMark.text }}</p>
+        <a :href="bookMark.url">Link</a>
+        <BaseButton @click="deleteBookMark(bookMark.id)">✖️</BaseButton>
+      </BaseCard>
+    </li>
+  </ul>
 </template>
 
 <script>
 export default {
-  props: ["bookMarks"],
-  emits: ["deleteBookMark", "addMark"],
+  inject: ["bookMarks", "deleteBookMark"],
 };
 </script>
 

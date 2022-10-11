@@ -1,13 +1,15 @@
 import { createApp } from "vue";
 
 import App from "./App.vue";
-import BaseCard from "./components/BaseCard.vue";
-import BaseTextInput from "./components/BaseTextInput.vue";
-import ErrorPopup from "./components/ErrorPopup.vue";
+import BaseButton from "./components/UI/BaseButton.vue";
+import BaseCard from "./components/UI/BaseCard.vue";
+import BaseTextInput from "./components/UI/BaseTextInput.vue";
+import BasePopup from "./components/UI/BasePopup.vue";
 
 const app = createApp(App);
 
+app.component("BaseButton", BaseButton);
 app.component("BaseCard", BaseCard);
 app.component("BaseTextInput", BaseTextInput);
-app.component("ErrorPopup", ErrorPopup);
+app.component("BasePopup", BasePopup);
 app.mount("#app");
