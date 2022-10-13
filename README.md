@@ -1,6 +1,6 @@
 # Learn Vue
 
-## 分支：Components-&-slot
+## 分支：CLI-&-Components
 
 | 資料夾             | 內容      |         |
 | ----------------- | -------- | ------- |
