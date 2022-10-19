@@ -27,7 +27,7 @@ export default {
   // },
 
   // 使用帶有參數的路由時，相同的組件實例將被重複使用。
-  // 因為兩個路由都渲染同個組件，比起銷毀再創建，復用則顯得更加高效。
+  // 因為兩個路由都渲染同個組件，比起銷毀再創建，重複使用則顯得更加高效。
   // 不過，這也意味著組件的生命週期鉤子不會被調用。
   created() {
     console.log("path: ");
@@ -42,13 +42,15 @@ export default {
     // this.teamName = team.name;
     // this.members = this.users.filter((user) => team.members.includes(user.id));
   },
+
   // 要對同一個組件中參數的變化做出響應的話，可以簡單地 watch $route對像上的任意屬性
   // 我這裡用 computed
   // watch: {
   //   $route() {},
   // },
+
   computed: {
-    // teamId() { // 被 props取代
+    // teamId() { // 路由配置時 props設為 true，可以將參數直接 props進子組件，取代用 this.$route.params抓參數
     //   return this.$route.params.teamId;
     // },
     team() {
