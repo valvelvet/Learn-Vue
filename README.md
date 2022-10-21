@@ -6,10 +6,10 @@
 | base                                  | Vue基礎                               |
 | CLI-&-Components                      | 組合式 Vue與組件：朋友列表、書籤 練習      |
 | Form-&-API                            | 表單練習、發送http請求練習               |
-| <b>Router-&-AnimationsTransitions</b> | 路由、動畫                             |
+| Router-&-AnimationsTransitions        | 路由、動畫                             |
+| <b>Vuex</b>                           | Vuex Store                           |
 
-## 分支：Router
-| 資料夾                         | 內容      |         |
-| ----------------------------- | -------- | ------- |
-| learn-router                  | 路由      |         |
-| learn-animationsTransitions   | 動畫      |         |
+## 分支：Vuex
+| 資料夾         | 內容      |         |
+| ------------- | -------- | ------- |
+| learn-vuex    | Vuex     |         |
