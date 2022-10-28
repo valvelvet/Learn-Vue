@@ -10,6 +10,7 @@
 | <b>Vuex</b>                           | Vuex Store                           |
 
 ## 分支：Vuex
-| 資料夾         | 內容      |         |
-| ------------- | -------- | ------- |
-| learn-vuex    | Vuex     |         |
+| 資料夾         | 內容      |
+| ------------- | -------- |
+| learn-vuex    | Vuex     |
+| pratice-vuex  | 購物車    |
