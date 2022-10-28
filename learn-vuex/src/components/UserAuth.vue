@@ -15,7 +15,8 @@ export default {
   },
   computed: {
     auth() {
-      return this.$store.getters.testAuth;
+      // return this.$store.getters.testAuth;
+      return this.$store.getters.auth;
     },
   },
   methods: {
