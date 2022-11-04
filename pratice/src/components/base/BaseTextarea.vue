@@ -2,21 +2,20 @@
   <div>
     <label>{{ label }}</label>
     <p v-if="readonly">{{ inputValue }}</p>
-    <input
-      v-else
+    <textarea
+    v-else
       v-model="inputValue"
-      :type="type ?? 'text'"
-      :maxlength="maxlength"
-      :placeholder="placeholder ?? '-'"
+      :cols="col ?? 30"
+      :rows="row ?? 3"
       :disabled="readonly ?? false"
       @input="$emit('onInput', inputValue)"
-    />
+    ></textarea>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["modelValue", "label", "type", "maxlength", "placeholder", "readonly"],
+  props: ["modelValue", "label", "col", "row", "readonly"],
   emits: ["onInput"],
   data() {
     return {
@@ -33,25 +32,27 @@ export default {
 div {
   margin: 0.5rem 0;
 }
-input {
+textarea {
+  resize: none;
+  min-width: 200px;
   font-size: 1rem;
   color: #446;
-  border-radius: 20px;
+  border-radius: 10px;
   padding: 0.25rem 0.75rem;
   border: 1px solid #ddd;
   box-shadow: 0 1px 5px 0 #ddd;
   outline: none;
 }
-input::placeholder {
+textarea::placeholder {
   color: #88a;
 }
-input:focus {
+textarea:focus {
   box-shadow: inset 0 1px 5px 0 #ddd;
 }
-input:focus::placeholder {
+textarea:focus::placeholder {
   color: #88a3;
 }
-p {
+p{
   color: #59a;
 }
 </style>
