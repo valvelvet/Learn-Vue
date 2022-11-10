@@ -4,7 +4,7 @@
       <span id="register-text">SIGNUP</span>
       <RegisterForm id="register-form"></RegisterForm>
     </section>
-    <section :class="{ select: !isRegister }" @click="isRegister = false">
+    <section :class="{ select: !isRegister }" @click="changeToLogin">
       <span id="login-text">LOGIN</span>
       <LoginForm id="login-form"></LoginForm>
     </section>
@@ -20,6 +20,15 @@ export default {
     return {
       isRegister: true,
     };
+  },
+  
+  methods: {
+    changeToLogin() {
+      this.isRegister = false;
+    },
+  },
+  created() {
+    this.isRegister = this.$route.query.isRegister;
   },
 };
 </script>

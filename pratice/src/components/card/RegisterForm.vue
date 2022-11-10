@@ -1,6 +1,6 @@
 <template>
   <BaseCard>
-    <form @submit.prevent="login()">
+    <form @submit.prevent="register()">
       <h2>- 註冊為繪師 -</h2>
       <div class="input">
         <BaseInput
@@ -26,7 +26,7 @@
           @onInput="pawCheck('paw2', $event)"
         ></BaseInput>
       </div>
-      <BaseButton @click="register">註冊</BaseButton>
+      <BaseButton>註冊</BaseButton>
       <p class="error-msg">{{ valid.msg }}</p>
     </form>
   </BaseCard>
@@ -55,15 +55,18 @@ export default {
     updateData(key, data) {
       data ? (this.valid[key] = true) : (this.valid[key] = false);
       this.data[key] = data;
+      if (key === "email") {
+        console.log(data);
+      }
     },
-    register() {
+    async register() {
       this.valid.msg = "";
       if (!this.data.email) this.valid.msg += "請填寫信箱\n";
       if (!this.data.name) this.valid.msg += "請填寫暱稱\n";
       if (!this.data.paw) this.valid.msg += "密碼驗證錯誤\n";
       if (!this.valid.msg) {
         console.log(this.data);
-        const res = this.$store.dispatch("register", this.data);
+        const res = await this.$store.dispatch("register", this.data);
         if (res) {
           this.$router.push({ name: "SETTING" });
         } else {

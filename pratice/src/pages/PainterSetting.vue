@@ -8,9 +8,10 @@
           <div class="avatorPic">
             <img :src="painter.avator" alt="" />
           </div>
-          <BaseButton v-if="editing" @click="updateData('avator', $event)">
+          <!-- <BaseButton v-if="editing" @click="updateData('avator', $event)">
             <img src="https://cdn-icons-png.flaticon.com/512/3031/3031708.png" alt="" />
-          </BaseButton>
+          </BaseButton> -->
+          <BaseInput v-if="editing" v-model="painter.avator" @onInput="updateData('avator', $event)"></BaseInput>
         </div>
         <div class="intro">
           <BaseInput
@@ -21,7 +22,7 @@
           ></BaseInput>
           <BaseTextarea
             label="自我介紹："
-            row="4"
+            row="5"
             v-model="painter.description"
             :readonly="!editing"
             @onInput="updateData('description', $event)"
@@ -38,11 +39,15 @@
           </BaseChipGroup>
           <div class="artWorks">
             <label for="">Sample work：</label>
+            <div v-if="editing">
+              <BaseInput v-model="painter.works[0]" @onInput="updateWorks(0, $event)"></BaseInput>
+              <BaseInput v-model="painter.works[1]" @onInput="updateWorks(1, $event)"></BaseInput>
+              <BaseInput v-model="painter.works[2]" @onInput="updateWorks(2, $event)"></BaseInput>
+            </div>
             <div @click="updateData('avator', $event)">
               <img v-for="pic in painter.works" :key="pic" :src="pic" />
             </div>
           </div>
-          <!-- <BaseFileUpLoad></BaseFileUpLoad> -->
         </div>
       </form>
     </BaseCard>
@@ -56,11 +61,11 @@ export default {
     return {
       id: "",
       painter: {
-        id: "",
+        email: "",
         name: "",
         description: "",
         tags: [],
-        works: [],
+        works: ["", "", ""],
         avator: "",
       },
       editing: false,
@@ -69,7 +74,7 @@ export default {
   computed: {
     opctionTags() {
       return [...this.$store.getters.tagsOpctions].map((tag) => {
-        return { ...tag, checked: this.painter.tags.find((t) => t === tag.id) ? true : false };
+        return { ...tag, checked: this.painter.tags?.find((t) => t === tag.id) ? true : false };
       });
     },
   },
@@ -77,7 +82,23 @@ export default {
     updateData(key, data) {
       this.painter[key] = data;
     },
+    updateWorks(key, data) {
+      this.painter.works[key] = data;
+    },
     save() {
+      this.painter.works = this.painter.works.filter((work) => work);
+      this.painter = {
+        ...this.painter,
+        works: this.painter.works.filter((work) => work),
+        isEnable:
+          this.painter.avator &&
+          this.painter.description &&
+          this.painter.name &&
+          this.painter.tags.length &&
+          this.painter.works.length
+            ? true
+            : false,
+      };
       this.$store.dispatch("updatePainterInfo", this.painter);
       this.editing = false;
     },
@@ -110,7 +131,6 @@ section form {
   position: relative;
   margin-right: 1rem;
   width: 150px;
-  height: 150px;
 }
 .avatorPic {
   position: relative;
@@ -130,20 +150,8 @@ section form {
   transform: translate(-50%, -50%);
   transition: 0.3s;
 }
-.avator button {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  margin: 0;
-  padding: 0;
-  display: block;
-  width: 2.5rem;
-  height: 2.5rem;
-  font-style: 1rem;
-}
-.avator button img {
-  width: 50%;
-  border-radius: 2px;
+.avator :deep(input) {
+  width: 100%;
 }
 .intro {
   width: calc(100% - 150px - 1rem);
@@ -160,6 +168,9 @@ section form > button {
   right: 0.5rem;
 }
 .artWorks div {
+  width: 100%;
+}
+.artWorks :deep(input) {
   width: 100%;
 }
 .artWorks img {

@@ -32,7 +32,7 @@ export default {
   border-radius: 50px;
   color: #568;
   background-color: #fff;
-  border: 1px solid #ddd;
+  border: none;
   box-shadow: 0 1px 5px 0 #ddd;
 }
 .base-button:hover {

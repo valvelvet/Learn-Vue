@@ -11,11 +11,10 @@
         <p>{{ painter.description }}</p>
       </div>
       <div class="commission-painter-tags">
-        <BaseChip v-for="tag in opctionTags" :key="tag.id" :readonly="true" :painter="tag">{{ tag.value }}</BaseChip>
+        <BaseChip v-for="tag in opctionTags" :key="tag.id" :readonly="true" :value="tag">{{ tag.value }}</BaseChip>
       </div>
     </BaseCard>
-    <BaseCard v-if="loginId !== painter.id">
-      <!-- <h1>發送委託訊息</h1> -->
+    <BaseCard>
       <form @submit.prevent="save()">
         <BaseInput label="Email：" v-model="commission.email" @onInput="updateData('email', $event)"></BaseInput>
         <BaseTextarea
@@ -31,6 +30,7 @@
 </template>
 
 <script>
+import store from "../store/index.js";
 export default {
   data() {
     return {
@@ -39,15 +39,11 @@ export default {
         email: "",
         context: "",
       },
+      painter:{},
+      opctionTags:[]
     };
   },
   computed: {
-    opctionTags() {
-      return this.$store.getters.tags([...this.painter.tags]);
-    },
-    painter() {
-      return { ...this.$store.getters.painterInfo(this.commission.painterId) };
-    },
     loginId() {
       const islogin = this.$store.getters.islogin;
       if (islogin) return this.$store.getters.loginId;
@@ -59,16 +55,24 @@ export default {
       this.commission[key] = data;
     },
     save() {
-      console.log(this.commission);
       this.$store.dispatch("addNewCommission", this.commission);
     },
-    initPainterInfo(id) {
-      this.id = id;
-      this.painter = { ...this.$store.getters.painterInfo(id) };
+    async initCommission() {
+      this.commission.painterId = this.$route.query.id;
     },
   },
-  created() {
-    this.commission.painterId = this.$route.query.id;
+  async created() {
+    await this.$store.dispatch("getPainters");
+    await this.initCommission();
+    this.painter = await this.$store.getters.painterInfo(this.commission.painterId);
+    this.opctionTags = await this.$store.getters.tags([...this.painter.tags]);
+  },
+  beforeRouteEnter(to) {
+    const islogin = store.getters.islogin;
+    if (islogin) {
+      const loginId = store.getters.loginId;
+      if (loginId === to.query.id) return { path: "/SETTING" };
+    }
   },
 };
 </script>

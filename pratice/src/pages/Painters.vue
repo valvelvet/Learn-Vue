@@ -9,11 +9,7 @@
       </div>
     </BaseCard>
     <TransitionGroup name="list" tag="ul" class="painter-card">
-      <PainterCard
-        v-for="painter in painters"
-        :key="painter.id"
-        :value="painter"
-      ></PainterCard>
+      <PainterCard v-for="painter in filterPainters" :key="painter.email" :value="painter"></PainterCard>
     </TransitionGroup>
   </section>
   <router-view></router-view>
@@ -27,11 +23,12 @@ export default {
     return {
       filterName: "",
       filterTags: [],
+      painters: [],
     };
   },
   computed: {
-    painters() {
-      return this.$store.getters.painters.filter((item) => {
+    filterPainters() {
+      return this.painters.filter((item) => {
         let queryTags = false;
         if (this.filterTags.length > 0) {
           queryTags = this.filterTags.some((queryItem) => {
@@ -58,6 +55,10 @@ export default {
       if (filter === "tags") this.filterTags = data;
       else if (filter === "name") this.filterName = data;
     },
+  },
+  async created() {
+    await this.$store.dispatch("getPainters");
+    this.painters = await this.$store.getters.painters;
   },
 };
 </script>

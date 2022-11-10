@@ -1,6 +1,12 @@
 <template>
   <li>
-    <div @mouseenter="hover = true" @mouseleave="hover = false" @click="active = true">
+    <router-link
+      :to="infoPage"
+      @mouseenter="hovering()"
+      @mouseleave="endHover()"
+      class="painter-card"
+      :class="{ hovering: hover }"
+    >
       <div class="avator">
         <img :src="value.avator" alt="" />
       </div>
@@ -14,12 +20,16 @@
         </div>
       </div>
       <div class="link">
-        <router-link :to="infoPage">Commisson ></router-link>
+        <p>Commisson »</p>
       </div>
-    </div>
-    <div class="work" v-if="hover || active">
-      <img v-for="work in value.works" :key="work" :style="{ height: worksNum + '%' }" :src="work" />
-    </div>
+    </router-link>
+    <transition name="art-works">
+      <div class="works" v-if="hover">
+        <transition name="art-work" v-for="(work, index) in value.works" :key="work">
+          <img v-if="workSwitch === index" :src="work" />
+        </transition>
+      </div>
+    </transition>
   </li>
 </template>
 
@@ -29,7 +39,8 @@ export default {
   data() {
     return {
       hover: false,
-      active: false,
+      workSwitch: 0,
+      switching: null,
     };
   },
   computed: {
@@ -37,10 +48,21 @@ export default {
       return this.$store.getters.tags([...this.value.tags]);
     },
     infoPage() {
-      return { name: "COMMISSION", query: { id: this.value.id } };
+      return { name: "COMMISSION", query: { id: this.value.email } };
     },
-    worksNum() {
-      return 100 / this.value.works.length;
+  },
+  methods: {
+    hovering() {
+      this.hover = true;
+      if (this.value.works.length > 1)
+        this.switching = setInterval(() => {
+          this.workSwitch = this.workSwitch < this.value.works.length - 1 ? this.workSwitch + 1 : 0;
+        }, 3000);
+    },
+    endHover() {
+      clearTimeout(this.switching);
+      this.hover = false;
+      this.workSwitch = 0;
     },
   },
 };
@@ -50,22 +72,17 @@ export default {
 li {
   position: relative;
   display: flex;
-  z-index: 1;
-  background: linear-gradient(90deg, #fff 150px, transparent);
   border-radius: 200px 0 0 200px;
 }
-.work {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: calc(100% - 60px);
-  z-index: -1;
+li:hover .info {
+  background: linear-gradient(90deg, #fffc 450px, transparent);
 }
-.work img {
-  display: block;
-  padding: 1rem;
-  opacity: 0.8;
+.painter-card {
+  width: 100%;
+}
+.painter-card .hovering {
+  position: relative;
+  z-index: 10;
 }
 .avator {
   position: absolute;
@@ -76,22 +93,6 @@ li {
   margin-right: -50px;
   border: 5px solid #fff;
 }
-.link {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: space-between;
-  bottom: 0;
-  right: 0;
-}
-.link a {
-  font-size: 2rem;
-  color: #88a2;
-}
-.link a:hover {
-  color: #88a7;
-}
 .avator img {
   width: 100%;
   position: absolute;
@@ -100,11 +101,31 @@ li {
   transform: translate(-50%, -50%);
   transition: 0.3s;
 }
+li:hover .avator img {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+.link p {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: 200px 0 0 200px;
+  font-size: 100px;
+  width: 700px;
+  line-height: 150px;
+  color: #88a;
+  transition: 1s ease;
+  background: linear-gradient(90deg, transparent 250px, #fffc 350px, #fffc 80%, transparent 100%);
+}
+li:hover .link p {
+  left: 150px;
+  opacity: 1;
+}
 .info {
   width: 100%;
   height: 150px;
   padding: 1rem;
-  background: linear-gradient(90deg, #fff 150px, transparent);
+  background: linear-gradient(90deg, #fff 90%, transparent);
   padding-left: 170px;
   border-radius: 200px 0 0 200px;
   display: flex;
@@ -112,17 +133,7 @@ li {
   justify-content: space-between;
   color: #333;
 }
-li:hover {
-  background: linear-gradient(90deg, #fff 80%, transparent);
-}
-
-li:hover .avator img {
-  transform: translate(-50%, -50%) scale(1.05);
-}
-.tags {
-  display: flex;
-}
-p {
+.info p {
   color: #888;
   font-size: 0.8rem;
   overflow: hidden;
@@ -130,5 +141,54 @@ p {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+.tags {
+  display: flex;
+}
+.works {
+  position: fixed;
+  bottom: 2rem;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 60px - 2rem);
+  z-index: 1;
+}
+.art-works-leave-to,
+.art-works-enter-from {
+  opacity: 0;
+}
+.art-works-leave-active,
+.art-works-enter-active {
+  transition: 1s ease;
+}
+.art-works-enter-to,
+.art-works-leave-from {
+  opacity: 1;
+}
+.works img {
+  display: block;
+  position: absolute;
+  height: 90%;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  box-shadow: 0 0 50px 50px #3332;
+}
+.art-work-enter-from {
+  opacity: 0;
+  left: 100% !important;
+}
+.art-work-leave-active,
+.art-work-enter-active {
+  transition: 1s ease;
+}
+.art-work-enter-to,
+.art-work-leave-from {
+  opacity: 1;
+  left: 50% !important;
+}
+.art-work-leave-to {
+  opacity: 0;
+  left: 0% !important;
 }
 </style>

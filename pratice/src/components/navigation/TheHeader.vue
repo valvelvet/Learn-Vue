@@ -5,7 +5,8 @@
         <img src="https://cdn-icons-png.flaticon.com/512/2919/2919740.png" />
       </router-link>
       <div class="nav" v-if="!islogin">
-        <BaseButton :isLink="true" :to="register">登入</BaseButton>
+        <BaseButton :isLink="true" :to="register">註冊</BaseButton>
+        <BaseButton :isLink="true" :to="login">登入</BaseButton>
       </div>
       <div class="nav" v-else>
         <BaseButton :isLink="true" :to="commission">委託訊息</BaseButton>
@@ -25,8 +26,11 @@ export default {
     id() {
       return this.$store.getters.loginId;
     },
+    login() {
+      return { path: "/register", query: { isRegister: false } };
+    },
     register() {
-      return "/register";
+      return { path: "/register", query: { isRegister: true } };
     },
     commission() {
       return { name: "MESSAGE" };
