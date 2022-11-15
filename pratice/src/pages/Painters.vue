@@ -8,11 +8,19 @@
         </BaseChipGroup>
       </div>
     </BaseCard>
-    <TransitionGroup name="list" tag="ul" class="painter-card">
-      <PainterCard v-for="painter in filterPainters" :key="painter.email" :value="painter"></PainterCard>
-    </TransitionGroup>
+    <BaseCard v-if="isloading" class="isloading"><div></div></BaseCard>
+    <div v-else-if="!loadError">
+      <TransitionGroup name="list" tag="ul" class="painter-card">
+        <PainterCard v-for="painter in filterPainters" :key="painter.email" :value="painter"></PainterCard>
+        <BaseCard v-if="filterPainters.length <= 0" class="no-painter">
+          <li>找不到繪師，請調整搜尋條件</li>
+        </BaseCard>
+      </TransitionGroup>
+    </div>
+    <BaseCard v-else class="api-error">
+      <p>請確認連線正常，稍後再試</p>
+    </BaseCard>
   </section>
-  <router-view></router-view>
 </template>
 
 <script>
@@ -21,6 +29,8 @@ export default {
   components: { PainterCard },
   data() {
     return {
+      isloading: false,
+      loadError: false,
       filterName: "",
       filterTags: [],
       painters: [],
@@ -57,8 +67,13 @@ export default {
     },
   },
   async created() {
-    await this.$store.dispatch("getPainters");
+    this.isloading = true;
+    this.loadError = false;
+    await this.$store.dispatch("getPainters").catch(() => {
+      this.loadError = true;
+    });
     this.painters = await this.$store.getters.painters;
+    this.isloading = false;
   },
 };
 </script>
@@ -76,5 +91,35 @@ export default {
 }
 .painter-card li {
   margin: 2rem auto;
+}
+.isloading,
+.api-error,
+.no-painter {
+  padding: 4rem;
+  text-align: center;
+  margin: 2rem auto;
+  color: #a88;
+}
+.no-painter {
+  width: 100%;
+  padding: 2rem;
+  margin: 2rem auto;
+}
+.isloading div {
+  width: 2rem;
+  height: 2rem;
+  margin: auto;
+  border-radius: 50%;
+  border: 5px solid #88a;
+  border-right: 5px solid transparent;
+  animation: loading 1s linear infinite;
+}
+@keyframes loading {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

@@ -74,7 +74,7 @@ li {
   display: flex;
   border-radius: 200px 0 0 200px;
 }
-li:hover .info {
+a:hover .info {
   background: linear-gradient(90deg, #fffc 450px, transparent);
 }
 .painter-card {
@@ -101,7 +101,7 @@ li:hover .info {
   transform: translate(-50%, -50%);
   transition: 0.3s;
 }
-li:hover .avator img {
+a:hover .avator img {
   transform: translate(-50%, -50%) scale(1.05);
 }
 .link p {
@@ -115,14 +115,13 @@ li:hover .avator img {
   line-height: 150px;
   color: #88a;
   transition: 1s ease;
-  background: linear-gradient(90deg, transparent 250px, #fffc 350px, #fffc 80%, transparent 100%);
 }
-li:hover .link p {
+a:hover .link p {
   left: 150px;
   opacity: 1;
 }
 .info {
-  width: 100%;
+  width: 600px;
   height: 150px;
   padding: 1rem;
   background: linear-gradient(90deg, #fff 90%, transparent);
@@ -157,7 +156,9 @@ li:hover .link p {
 .art-works-enter-from {
   opacity: 0;
 }
-.art-works-leave-active,
+.art-works-leave-active{
+  transition: 0.3s ease;
+}
 .art-works-enter-active {
   transition: 1s ease;
 }

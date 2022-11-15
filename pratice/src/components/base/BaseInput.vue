@@ -9,6 +9,7 @@
       :maxlength="maxlength"
       :placeholder="placeholder ?? '-'"
       :disabled="readonly ?? false"
+      :class="{ inputError: inputError }"
       @input="$emit('onInput', inputValue)"
     />
   </div>
@@ -16,7 +17,7 @@
 
 <script>
 export default {
-  props: ["modelValue", "label", "type", "maxlength", "placeholder", "readonly"],
+  props: ["modelValue", "label", "type", "maxlength", "placeholder", "readonly", "inputError"],
   emits: ["onInput"],
   data() {
     return {
@@ -50,6 +51,9 @@ input:focus {
 }
 input:focus::placeholder {
   color: #88a3;
+}
+input.inputError{
+  border: 1px solid #caa;
 }
 p {
   color: #59a;

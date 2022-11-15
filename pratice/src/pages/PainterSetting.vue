@@ -2,15 +2,15 @@
   <section>
     <BaseCard>
       <form @submit.prevent="save()">
-        <BaseButton v-if="!editing" @click="editing = true">編輯</BaseButton>
-        <BaseButton v-if="editing" @click="save()">儲存編輯</BaseButton>
+        <div class="buttons">
+          <BaseButton v-if="!editing" @click="editing = true">編輯</BaseButton>
+          <BaseButton v-if="editing" @click="editing = false">取消</BaseButton>
+          <BaseButton v-if="editing" @click="save()">儲存</BaseButton>
+        </div>
         <div class="avator">
           <div class="avatorPic">
             <img :src="painter.avator" alt="" />
           </div>
-          <!-- <BaseButton v-if="editing" @click="updateData('avator', $event)">
-            <img src="https://cdn-icons-png.flaticon.com/512/3031/3031708.png" alt="" />
-          </BaseButton> -->
           <BaseInput v-if="editing" v-model="painter.avator" @onInput="updateData('avator', $event)"></BaseInput>
         </div>
         <div class="intro">
@@ -55,11 +55,10 @@
 </template>
 
 <script>
-import store from "@/store/index.js";
 export default {
   data() {
     return {
-      id: "",
+      editing: false,
       painter: {
         email: "",
         name: "",
@@ -68,7 +67,6 @@ export default {
         works: ["", "", ""],
         avator: "",
       },
-      editing: false,
     };
   },
   computed: {
@@ -80,16 +78,17 @@ export default {
   },
   methods: {
     updateData(key, data) {
+      console.log(this.painter);
       this.painter[key] = data;
     },
     updateWorks(key, data) {
       this.painter.works[key] = data;
     },
     save() {
-      this.painter.works = this.painter.works.filter((work) => work);
+      this.painter.works = this.painter.works?.filter((work) => work);
       this.painter = {
         ...this.painter,
-        works: this.painter.works.filter((work) => work),
+        works: this.painter.works?.filter((work) => work),
         isEnable:
           this.painter.avator &&
           this.painter.description &&
@@ -102,16 +101,10 @@ export default {
       this.$store.dispatch("updatePainterInfo", this.painter);
       this.editing = false;
     },
-    initPainterInfo(id) {
-      this.id = id;
-      this.painter = { ...this.$store.getters.painterInfo(id) };
-    },
   },
-  created() {
-    this.initPainterInfo(this.$store.getters.loginId);
-  },
-  beforeRouteEnter() {
-    return !store.getters.islogin ? { name: "REGISTER" } : true;
+  async created() {
+    await this.$store.dispatch("getPainters");
+    this.painter = await { ...this.$store.getters.painterInfo };
   },
 };
 </script>
@@ -162,7 +155,7 @@ section :deep(textarea) {
 :deep(label) {
   display: block;
 }
-section form > button {
+section form > .buttons {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;

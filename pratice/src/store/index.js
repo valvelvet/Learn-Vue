@@ -1,131 +1,164 @@
 import { createStore } from "vuex";
+import painters from "./painters.js";
+import commissions from "./commissions.js";
 
 const store = createStore({
+  modules: { painters, commissions },
   state: {
-    islogin: false,
-    loginId: "",
-    painters: {},
-    tagsOpctions: [
-      { id: 1, value: "頭貼" },
-      { id: 2, value: "CG立繪" },
-      { id: 3, value: "個人工作室" },
-      { id: 4, value: "3D" },
-      { id: 5, value: "v皮" },
-      { id: 6, value: "跨時代" },
-      { id: 7, value: "實體藝術" },
-      { id: 8, value: "電繪" },
-      { id: 9, value: "指導" },
-      { id: 10, value: "獵奇" },
-      { id: 11, value: "二創" },
-      { id: 12, value: "漫畫" },
-      { id: 13, value: "類真" },
-      { id: 14, value: "日系" },
-    ],
-    commissions: [],
+    token: null,
+    userId: null,
+    tokenExpiration: null,
   },
   getters: {
-    islogin(state) {
-      return state.islogin;
+    token(state) {
+      return state.token;
     },
-    loginId(state) {
-      return state.loginId;
+    userId(state) {
+      return state.userId;
     },
-    painters(state) {
-      return state.painters.filter((painter) => painter.isEnable === true);
-    },
-    painterInfo: (state) => (id) => {
-      return state.painters.filter((painter) => painter.email === id)[0];
-    },
-    tags: (state) => (tags) => {
-      const tagsOpctions = state.tagsOpctions.filter(
-        (tagOpction) => tags.find((tagId) => tagId === tagOpction.id) >= 0
-      );
-      return tagsOpctions;
-    },
-    tagsOpctions(state) {
-      return state.tagsOpctions;
-    },
-    getCommissions(state) {
-      return state.commissions.filter((mes) => mes.painterId === state.loginId);
-    },
+    // tokenExpiration(state) {
+    //   return state.tokenExpiration;
+    // },
   },
   mutations: {
-    getPainters(state, payload) {
-      state.painters = payload;
-    },
-    logout(state) {
-      state.islogin = false;
-    },
-    login(state, payload) {
-      state.islogin = true;
-      state.loginId = payload;
+    setUser(state, payload) {
+      state.token = payload.token;
+      state.userId = payload.userId;
+      state.tokenExpiration = payload.tokenExpiration;
+      localStorage.setItem("token",payload.token);
+      localStorage.setItem("userId",payload.userId);
     },
   },
   actions: {
-    async getPainters(context) {
-      await fetch("https://learn-vue-http-285cc-default-rtdb.firebaseio.com/painters.json")
-        .then((res) => {
-          return res.json();
-        })
-        .then((res) => {
-          const painters = [];
-          for (const key in res) {
-            painters.push({
-              avator: res[key].avator ?? "",
-              description: res[key].description ?? "",
-              email: key,
-              isEnable: res[key].isEnable ?? false,
-              name: res[key].name,
-              paw: res[key].paw,
-              tags: res[key].tags ? [...res[key].tags] : [],
-              works: res[key].works ? [...res[key].works] : [],
-            });
+    async signUp(context, payload) {
+      return await fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBgq5kFAF13eXisk1DQyY17z1KZbcWYcF8",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            email: payload.email,
+            password: payload.paw,
+            returnSecureToken: true,
+          }),
+        }
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw response.json();
           }
-          context.commit("getPainters", [...painters]);
+          return response.json();
+        })
+        .then((responseData) => {
+          context.commit("setUser", {
+            token: responseData.idToken,
+            userId: responseData.localId,
+            tokenExpiration: responseData.expiresIn,
+          });
+          return {
+            code: 200,
+            data: responseData,
+          };
+        })
+        .catch((error) => {
+          return error.then((err) => {
+            let message = "連線錯誤，請稍後再試";
+            let code = 404;
+            switch (err.error.message) {
+              case "EMAIL_EXISTS":
+                code = 3001;
+                message = "帳號已註冊，請移步至登入";
+                break;
+              case "INVALID_EMAIL":
+                code = 3001;
+                message = "信箱格式錯誤，請再次確認";
+                break;
+              case "WEAK_PASSWORD : Password should be at least 6 characters":
+                code = 3002;
+                message = "密碼長度至少6位";
+                break;
+              default:
+                break;
+            }
+            return {
+              code: code,
+              message: message,
+            };
+          });
         });
-    },
-    async register(context, payload) {
-      await fetch(`https://learn-vue-http-285cc-default-rtdb.firebaseio.com/painters/${payload.email}.json`, {
-        method: "put",
-        body: JSON.stringify({
-          paw: payload.paw,
-          name: payload.name,
-          isEnable: false,
-        }),
-      });
-      return await context.dispatch("login", payload);
-    },
-    logout(context) {
-      context.commit("logout");
     },
     async login(context, payload) {
-      await context.dispatch("getPainters");
-      if (context.state.painters.find((p) => p.email === payload.email && p.paw === payload.paw)) {
-        context.commit("login", payload.email);
-        return true;
-      } else return false;
-    },
-    async updatePainterInfo(_context, payload) {
-      await fetch(`https://learn-vue-http-285cc-default-rtdb.firebaseio.com/painters/${payload.email}.json`, {
-        method: "put",
-        body: JSON.stringify(payload),
-      });
-    },
-    async addNewCommission(context, payload) {
-      await fetch(`https://learn-vue-http-285cc-default-rtdb.firebaseio.com/commissions.json`, {
-        method: "post",
-        body: JSON.stringify({ ...payload, time: new Date() }),
-      });
-    },
-    async getCommissions(context) {
-      await fetch("https://learn-vue-http-285cc-default-rtdb.firebaseio.com/commissions.json")
-        .then((res) => {
-          return res.json();
+      return await fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBgq5kFAF13eXisk1DQyY17z1KZbcWYcF8",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            email: payload.email,
+            password: payload.paw,
+            returnSecureToken: true,
+          }),
+        }
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw response.json();
+          }
+          return response.json();
         })
-        .then((res) => {
-          res = Object.values(res);
-          context.state.commissions = res.filter((mes) => mes.painterId === context.state.loginId);
+        .then((responseData) => {
+          context.commit("setUser", {
+            token: responseData.idToken,
+            userId: responseData.localId,
+            tokenExpiration: responseData.expiresIn,
+          });
+          return {
+            code: 200,
+            data: responseData,
+          };
+        })
+        .catch((error) => {
+          return error.then((err) => {
+            let message = "連線錯誤，請稍後再試";
+            let code = 404;
+            switch (err.error.message) {
+              case "EMAIL_NOT_FOUND":
+                code = 3001;
+                message = "帳號未註冊，請確認帳號或註冊加入我們";
+                break;
+              case "INVALID_EMAIL":
+                code = 3001;
+                message = "信箱格式錯誤，請再次確認";
+                break;
+              case "INVALID_PASSWORD":
+                code = 3002;
+                message = "密碼錯誤";
+                break;
+              case "TOO_MANY_ATTEMPTS_TRY_LATER : Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.":
+                code = 3002;
+                message = "由於多次失敗的登錄嘗試，為了帳號安全，此帳號已暫時鎖定";
+                break;
+              default:
+                break;
+            }
+            return {
+              code: code,
+              message: message,
+            };
+          });
         });
+    },
+    logout(context) {
+      context.commit("setUser", {
+        token: null,
+        userId: null,
+        tokenExpiration: null,
+      });
+    },
+    tryLogin(context) {
+      context.commit("setUser", {
+        token: localStorage.getItem("token"),
+        userId: localStorage.getItem("userId"),
+        tokenExpiration: null,
+      });
     },
   },
 });

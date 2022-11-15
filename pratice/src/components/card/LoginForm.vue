@@ -5,13 +5,21 @@
       <div class="input">
         <BaseInput
           label="帳號："
-          placeholder="email"
+          placeholder="電子信箱"
+          type="email"
           v-model="data.email"
+          :inputError="valid.email"
           @onInput="updateData('email', $event)"
         ></BaseInput>
-        <BaseInput label="密碼：" type="password" v-model="data.paw" @onInput="updateData('paw', $event)"></BaseInput>
+        <BaseInput
+          label="密碼："
+          type="password"
+          v-model="data.paw"
+          :inputError="valid.paw"
+          @onInput="updateData('paw', $event)"
+        ></BaseInput>
       </div>
-      <BaseButton>登入</BaseButton>
+      <BaseButton :disable="loading || !(data.email && data.paw)">登入</BaseButton>
       <p class="error-msg">{{ valid.msg }}</p>
     </form>
   </BaseCard>
@@ -21,12 +29,15 @@
 export default {
   data() {
     return {
+      loading: false,
       data: {
         email: "",
         paw: "",
       },
       valid: {
         msg: "",
+        email: false,
+        paw: false,
       },
     };
   },
@@ -36,8 +47,13 @@ export default {
     },
     async login() {
       const res = await this.$store.dispatch("login", this.data);
-      if (res) this.$router.push("/");
-      else this.valid.msg= '帳號或密碼錯誤';
+      if (res.code === 200) {
+        this.$router.push("/");
+      } else {
+        if (res.code === 3001) this.valid.email = true;
+        if (res.code === 3002) this.valid.paw = true;
+        this.valid.msg = res.message;
+      }
     },
   },
 };
@@ -55,6 +71,8 @@ h2 {
   padding: 1rem 0;
 }
 .error-msg {
+  display: block;
+  height: 1rem;
   font-size: 0.9rem;
   margin-top: 0.5rem;
   color: #855;

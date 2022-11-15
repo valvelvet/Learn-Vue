@@ -1,10 +1,10 @@
 <template>
-  <div class="main" :class="{ modeIsRegister: isRegister }">
-    <section :class="{ select: isRegister }" @click="isRegister = true">
+  <div class="main" :class="{ modeIsRegister: isRegister === 'signUp' }">
+    <section :class="{ select: isRegister === 'signUp' }" @click="signUp">
       <span id="register-text">SIGNUP</span>
-      <RegisterForm id="register-form"></RegisterForm>
+      <SignUpForm id="register-form"></SignUpForm>
     </section>
-    <section :class="{ select: !isRegister }" @click="changeToLogin">
+    <section :class="{ select: isRegister === 'login' }" @click="login">
       <span id="login-text">LOGIN</span>
       <LoginForm id="login-form"></LoginForm>
     </section>
@@ -13,22 +13,28 @@
 
 <script>
 import LoginForm from "../components/card/LoginForm.vue";
-import RegisterForm from "../components/card/RegisterForm.vue";
+import SignUpForm from "../components/card/SignUpForm.vue";
 export default {
-  components: { LoginForm, RegisterForm },
+  components: { LoginForm, SignUpForm },
+  props: ["mode"],
   data() {
     return {
-      isRegister: true,
+      isRegister: this.mode ?? "signUp",
     };
   },
-  
   methods: {
-    changeToLogin() {
-      this.isRegister = false;
+    login() {
+      this.$router.replace({ name: "REGISTER", params: { mode: "login" } });
+    },
+    signUp() {
+      this.$router.replace({ name: "REGISTER", params: { mode: "signUp" } });
     },
   },
-  created() {
-    this.isRegister = this.$route.query.isRegister;
+  mounted() {
+    this.isRegister = this.$route.params.mode ?? "signUp";
+  },
+  updated() {
+    this.isRegister = this.$route.params.mode ?? "signUp";
   },
 };
 </script>
@@ -80,6 +86,9 @@ span {
 #register-text {
   left: -3rem;
 }
+.select {
+  cursor: default;
+}
 .select > div {
   opacity: 1;
 }
@@ -115,7 +124,7 @@ span {
     width: calc(100vw - 1rem);
     transform: translate(calc(-100vw + 30px), 0);
   }
-  .modeIsRegister section > div {
+  .modeIsRegister a > div {
     transform: translate(-30px, 0);
   }
 }

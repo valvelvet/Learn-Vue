@@ -7,7 +7,6 @@ import BaseButton from "./components/base/BaseButton.vue";
 import BaseCard from "./components/base/BaseCard.vue";
 import BaseChip from "./components/base/BaseChip.vue";
 import BaseChipGroup from "./components/base/BaseChipGroup.vue";
-import BaseFileUpLoad from "./components/base/BaseFileUpLoad.vue";
 import BaseInput from "./components/base/BaseInput.vue";
 import BaseTextarea from "./components/base/BaseTextarea.vue";
 
@@ -22,7 +21,6 @@ app.component("BaseButton", BaseButton);
 app.component("BaseCard", BaseCard);
 app.component("BaseChip", BaseChip);
 app.component("BaseChipGroup", BaseChipGroup);
-app.component("BaseFileUpLoad", BaseFileUpLoad);
 app.component("BaseInput", BaseInput);
 app.component("BaseTextarea", BaseTextarea);
 

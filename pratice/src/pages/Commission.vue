@@ -16,14 +16,23 @@
     </BaseCard>
     <BaseCard>
       <form @submit.prevent="save()">
-        <BaseInput label="Email：" v-model="commission.email" @onInput="updateData('email', $event)"></BaseInput>
+        <BaseInput
+          label="Email："
+          type="email"
+          :readonly="isSend"
+          v-model="commission.email"
+          @onInput="updateData('email', $event)"
+        ></BaseInput>
         <BaseTextarea
           label="Context："
           row="4"
+          :readonly="isSend"
           v-model="commission.context"
           @onInput="updateData('context', $event)"
         ></BaseTextarea>
-        <BaseButton>送出</BaseButton>
+        <BaseButton v-if="!isSend">送出</BaseButton>
+        <BaseButton v-else :isLink="true" to="/">返回首頁</BaseButton>
+        <p class="error-msg">{{ valid.msg }}</p>
       </form>
     </BaseCard>
   </section>
@@ -34,19 +43,23 @@ import store from "../store/index.js";
 export default {
   data() {
     return {
+      loading: false,
+      isSend: false,
       commission: {
         painterId: "",
         email: "",
         context: "",
       },
-      painter:{},
-      opctionTags:[]
+      valid: {
+        msg: "",
+      },
+      painter: {},
+      opctionTags: [],
     };
   },
   computed: {
-    loginId() {
-      const islogin = this.$store.getters.islogin;
-      if (islogin) return this.$store.getters.loginId;
+    userId() {
+      if (this.$store.getters.token) return this.$store.getters.userId;
       else return null;
     },
   },
@@ -54,8 +67,17 @@ export default {
     updateData(key, data) {
       this.commission[key] = data;
     },
-    save() {
-      this.$store.dispatch("addNewCommission", this.commission);
+    async save() {
+      this.loading = true;
+      if (!this.valid.msg) {
+        const res = await this.$store.dispatch("addNewCommission", this.commission);
+        if (res.code === 200) {
+          this.loading = false;
+          this.isSend = true;
+        } else {
+          this.valid.msg = res.message;
+        }
+      }
     },
     async initCommission() {
       this.commission.painterId = this.$route.query.id;
@@ -68,10 +90,9 @@ export default {
     this.opctionTags = await this.$store.getters.tags([...this.painter.tags]);
   },
   beforeRouteEnter(to) {
-    const islogin = store.getters.islogin;
-    if (islogin) {
-      const loginId = store.getters.loginId;
-      if (loginId === to.query.id) return { path: "/SETTING" };
+    if (store.getters.token) {
+      const userId = store.getters.userId;
+      if (userId === to.query.id) return { path: "/SETTING" };
     }
   },
 };

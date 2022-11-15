@@ -2,7 +2,11 @@
   <TheHeader></TheHeader>
 
   <main>
-    <router-view></router-view>
+    <router-view v-slot="slotProps">
+      <transition name="route" mode="out-in">
+        <component :is="slotProps.Component"></component>
+      </transition>
+    </router-view>
   </main>
 
   <TheFooter></TheFooter>
@@ -16,6 +20,9 @@ export default {
   components: {
     TheHeader,
     TheFooter,
+  },
+  created() {
+    this.$store.dispatch("tryLogin");
   },
 };
 </script>
@@ -66,4 +73,18 @@ label {
   position: absolute !important;
 }
 
+.route-leave-to,
+.route-enter-from {
+  opacity: 0;
+}
+.route-leave-active {
+  transition: 0.3s ease;
+}
+.route-enter-active {
+  transition: 0.5s ease;
+}
+.route-enter-to,
+.route-leave-from {
+  opacity: 1;
+}
 </style>

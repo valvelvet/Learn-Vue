@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import store from "@/store/index.js";
 export default {
   data() {
     return {
@@ -34,9 +33,6 @@ export default {
         time: mes.time.slice(0, 16).replace("T", " ").replace(/-/g, "/"),
       };
     });
-  },
-  beforeRouteEnter() {
-    return !store.getters.islogin ? { name: "REGISTER" } : true;
   },
 };
 </script>

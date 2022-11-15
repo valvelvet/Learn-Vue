@@ -1,5 +1,5 @@
 <template>
-  <button v-if="!isLink" @click="$emit('click')" class="base-button">
+  <button v-if="!isLink" :disabled="disable" @click="$emit('click')" class="base-button">
     <slot></slot>
   </button>
   <router-link v-else :to="to" class="base-button">
@@ -17,6 +17,10 @@ export default {
     to: {
       type: [Object, String],
       default: "/",
+    },
+    disable: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ["click"],
@@ -42,6 +46,12 @@ export default {
 .base-button.active {
   color: #568;
   background-color: #aef3;
+  box-shadow: inset 0 1px 5px 0 #ddd;
+}
+.base-button:disabled {
+  cursor: default;
+  background-color: #eee;
+  color: #aaa;
   box-shadow: inset 0 1px 5px 0 #ddd;
 }
 </style>
