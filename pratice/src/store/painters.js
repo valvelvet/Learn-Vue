@@ -20,14 +20,17 @@ export default {
   },
   getters: {
     painters(state) {
-      return state.painters.filter((painter) => painter.isEnable === true);
+      return state.painters.filter(
+        (painter) =>
+          painter.name && painter.avator && painter.description && painter.tags.length && painter.works.length
+      );
     },
-    painterInfo (state, _getters, _rootState, rootGetters) {
-      const painterFilter = state.painters.filter((painter) => painter.email === rootGetters.userId)[0];
+    painterInfo: (state, _getters, _rootState, rootGetters) => (id) => {
+      const painterFilter = state.painters.filter((painter) => painter.email === (id ?? rootGetters.userId))[0];
       if (painterFilter) return painterFilter;
       else
         return {
-          email: rootGetters.userId,
+          email: id ?? rootGetters.userId,
           name: "",
           description: "",
           tags: [],

@@ -5,6 +5,7 @@ import commissions from "./commissions.js";
 const store = createStore({
   modules: { painters, commissions },
   state: {
+    projectApiKey: "AIzaSyBgq5kFAF13eXisk1DQyY17z1KZbcWYcF8",
     token: null,
     userId: null,
     tokenExpiration: null,
@@ -25,23 +26,20 @@ const store = createStore({
       state.token = payload.token;
       state.userId = payload.userId;
       state.tokenExpiration = payload.tokenExpiration;
-      localStorage.setItem("token",payload.token);
-      localStorage.setItem("userId",payload.userId);
+      if(payload.token)localStorage.setItem("token", payload.token);
+      if(payload.userId)localStorage.setItem("userId", payload.userId);
     },
   },
   actions: {
     async signUp(context, payload) {
-      return await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBgq5kFAF13eXisk1DQyY17z1KZbcWYcF8",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: payload.email,
-            password: payload.paw,
-            returnSecureToken: true,
-          }),
-        }
-      )
+      return await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + context.state.projectApiKey, {
+        method: "POST",
+        body: JSON.stringify({
+          email: payload.email,
+          password: payload.paw,
+          returnSecureToken: true,
+        }),
+      })
         .then((response) => {
           if (!response.ok) {
             throw response.json();
@@ -88,7 +86,7 @@ const store = createStore({
     },
     async login(context, payload) {
       return await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBgq5kFAF13eXisk1DQyY17z1KZbcWYcF8",
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key="+context.state.projectApiKey,
         {
           method: "POST",
           body: JSON.stringify({

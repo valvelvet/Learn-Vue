@@ -104,7 +104,8 @@ export default {
   },
   async created() {
     await this.$store.dispatch("getPainters");
-    this.painter = await { ...this.$store.getters.painterInfo };
+    this.painter = await { ...this.$store.getters.painterInfo() };
+    console.log(this.painter);
   },
 };
 </script>
