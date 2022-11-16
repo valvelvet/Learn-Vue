@@ -10,6 +10,7 @@ import BaseChipGroup from "./components/base/BaseChipGroup.vue";
 import BaseInput from "./components/base/BaseInput.vue";
 // import BaseTextarea from "./components/base/BaseTextarea.vue";
 
+// 異步組件
 const BaseTextarea = defineAsyncComponent(() => import("./components/base/BaseTextarea.vue"));
 
 import App from "./App.vue";
