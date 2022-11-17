@@ -1,90 +1,67 @@
 <template>
-  <TheHeader></TheHeader>
-
   <main>
-    <router-view v-slot="slotProps">
-      <transition name="route" mode="out-in">
-        <component :is="slotProps.Component"></component>
-      </transition>
-    </router-view>
+    <user-list :users="activeUsers" @list-projects="selectUser"></user-list>
+    <projects-list :user="selectedUser"></projects-list>
   </main>
-
-  <TheFooter></TheFooter>
 </template>
 
 <script>
-import TheHeader from "./components/navigation/TheHeader.vue";
-import TheFooter from "./components/navigation/TheFooter.vue";
+import USER_DATA from './dummy-data.js';
+
+import UserList from './components/users/UserList.vue';
+import ProjectsList from './components/projects/ProjectsList.vue';
 
 export default {
   components: {
-    TheHeader,
-    TheFooter,
+    UserList,
+    ProjectsList,
   },
-  created() {
-    this.$store.dispatch("tryLogin");
+  data() {
+    return {
+      selectedUser: null,
+      activeUsers: USER_DATA,
+    };
+  },
+  methods: {
+    selectUser(uid) {
+      this.selectedUser = this.activeUsers.find((usr) => usr.id === uid);
+    },
   },
 };
 </script>
 
 <style>
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
-  vertical-align: middle;
-  text-decoration: none;
-  list-style: none;
 }
-
 html {
   font-family: sans-serif;
 }
-
 body {
-  overflow-x: hidden;
+  margin: 0;
 }
 
 main {
-  font-size: 0;
-  background-color: #88a2;
-  margin-top: 60px;
-  padding: 2rem 0;
-  min-height: calc(100vh - 60px - 2rem);
-}
-section {
-  font-size: 16px;
-}
-label {
-  color: #555;
+  display: flex;
+  justify-content: space-around;
 }
 
-.list-move,
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.5s ease;
+button {
+  font: inherit;
+  border: 1px solid #00006b;
+  background-color: transparent;
+  color: #00006b;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  margin: 0.5rem 0.5rem 0.5rem 0;
 }
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-  transform: translate(20px, 0) scale(0.9);
-}
-.list-leave-active {
-  position: absolute !important;
+button:hover,
+button:active {
+  background-color: #efefff;
 }
 
-.route-leave-to,
-.route-enter-from {
-  opacity: 0;
-}
-.route-leave-active {
-  transition: 0.3s ease;
-}
-.route-enter-active {
-  transition: 0.5s ease;
-}
-.route-enter-to,
-.route-leave-from {
-  opacity: 1;
+button.selected {
+  background-color: #00006b;
+  color: white;
 }
 </style>

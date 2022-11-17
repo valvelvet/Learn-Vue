@@ -1,30 +1,12 @@
-import { createApp, defineAsyncComponent } from "vue";
+import { createApp } from 'vue';
 
-import router from "./router.js";
-import store from "./store/index.js";
-
-import BaseButton from "./components/base/BaseButton.vue";
-import BaseCard from "./components/base/BaseCard.vue";
-import BaseChip from "./components/base/BaseChip.vue";
-import BaseChipGroup from "./components/base/BaseChipGroup.vue";
-import BaseInput from "./components/base/BaseInput.vue";
-// import BaseTextarea from "./components/base/BaseTextarea.vue";
-
-// 異步組件
-const BaseTextarea = defineAsyncComponent(() => import("./components/base/BaseTextarea.vue"));
-
-import App from "./App.vue";
+import BaseSearch from './components/UI/BaseSearch.vue';
+import BaseContainer from './components/UI/BaseContainer.vue';
+import App from './App.vue';
 
 const app = createApp(App);
 
-app.use(router);
-app.use(store);
+app.component('base-search', BaseSearch);
+app.component('base-container', BaseContainer);
 
-app.component("BaseButton", BaseButton);
-app.component("BaseCard", BaseCard);
-app.component("BaseChip", BaseChip);
-app.component("BaseChipGroup", BaseChipGroup);
-app.component("BaseInput", BaseInput);
-app.component("BaseTextarea", BaseTextarea);
-
-app.mount("#app");
+app.mount('#app');
