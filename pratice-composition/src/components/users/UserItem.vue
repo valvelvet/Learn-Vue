@@ -5,16 +5,13 @@
   </li>
 </template>
 
-<script>
-export default {
-  props: ['id', 'userName'],
-  emits: ['list-projects'],
-  methods: {
-    viewProjects() {
-      this.$emit('list-projects', this.id);
-    },
-  },
-};
+<script setup>
+import { defineProps, defineEmits, toRefs } from "vue";
+const props = defineProps(["id", "userName"]);
+const emit = defineEmits(["list-projects"]);
+
+const { id, userName } = toRefs(props);
+const viewProjects = () => emit("list-projects", id);
 </script>
 
 <style scoped>

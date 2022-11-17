@@ -4,16 +4,13 @@
   </form>
 </template>
 
-<script>
-export default {
-  props: ['searchTerm'],
-  emits: ['search'],
-  methods: {
-    search(event) {
-      this.$emit('search', event.target.value);
-    },
-  },
-};
+<script setup>
+import { defineProps, defineEmits, toRefs } from "vue";
+
+const props = defineProps(["searchTerm"]);
+const emit = defineEmits(["search"]);
+const { searchTerm } = toRefs(props);
+const search = (event) => emit("search", event.target.value);
 </script>
 
 <style scoped>
