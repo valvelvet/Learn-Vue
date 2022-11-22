@@ -8,6 +8,8 @@
 | Form-&-API                            | 表單練習、發送http請求練習               |
 | Router-&-AnimationsTransitions        | 路由、動畫                             |
 | <b>Vuex</b>                           | Vuex Store                           |
+| Pratice-Router-Vuex                   | 綜合練習，繪師線上留言委託網站            |
+| Composition-API                       | 組合式API                             |
 
 ## 分支：Vuex
 | 資料夾         | 內容      |
