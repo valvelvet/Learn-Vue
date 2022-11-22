@@ -3,7 +3,7 @@
     <label>{{ label }}</label>
     <p v-if="readonly">{{ inputValue }}</p>
     <textarea
-    v-else
+      v-else
       v-model="inputValue"
       :cols="col ?? 30"
       :rows="row ?? 3"
@@ -21,6 +21,11 @@ export default {
     return {
       inputValue: this.modelValue,
     };
+  },
+  watch: {
+    modelValue() {
+      this.inputValue = this.modelValue;
+    },
   },
   created() {
     this.inputValue = this.modelValue;
@@ -52,7 +57,7 @@ textarea:focus {
 textarea:focus::placeholder {
   color: #88a3;
 }
-p{
+p {
   color: #59a;
 }
 </style>

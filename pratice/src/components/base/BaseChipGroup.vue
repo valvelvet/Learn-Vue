@@ -30,6 +30,11 @@ export default {
       items: [],
     };
   },
+  watch: {
+    modelValue() {
+      this.items = this.modelValue;
+    },
+  },
   computed: {
     checkedItems() {
       return this.items.filter((item) => item.checked);
@@ -51,7 +56,7 @@ export default {
 div {
   margin: 0 0.5rem 0.5rem 0;
 }
-p{
+p {
   color: #59a;
 }
 </style>

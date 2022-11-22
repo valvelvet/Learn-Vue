@@ -24,6 +24,11 @@ export default {
       inputValue: this.modelValue,
     };
   },
+  watch: {
+    modelValue() {
+      this.inputValue = this.modelValue;
+    },
+  },
   created() {
     this.inputValue = this.modelValue;
   },
@@ -52,7 +57,7 @@ input:focus {
 input:focus::placeholder {
   color: #88a3;
 }
-input.inputError{
+input.inputError {
   border: 1px solid #caa;
 }
 p {

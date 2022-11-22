@@ -26,20 +26,23 @@ const store = createStore({
       state.token = payload.token;
       state.userId = payload.userId;
       state.tokenExpiration = payload.tokenExpiration;
-      if(payload.token)localStorage.setItem("token", payload.token);
-      if(payload.userId)localStorage.setItem("userId", payload.userId);
+      localStorage.setItem("token", payload.token ?? "");
+      localStorage.setItem("userId", payload.userId ?? "");
     },
   },
   actions: {
     async signUp(context, payload) {
-      return await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + context.state.projectApiKey, {
-        method: "POST",
-        body: JSON.stringify({
-          email: payload.email,
-          password: payload.paw,
-          returnSecureToken: true,
-        }),
-      })
+      return await fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + context.state.projectApiKey,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            email: payload.email,
+            password: payload.paw,
+            returnSecureToken: true,
+          }),
+        }
+      )
         .then((response) => {
           if (!response.ok) {
             throw response.json();
@@ -86,7 +89,7 @@ const store = createStore({
     },
     async login(context, payload) {
       return await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key="+context.state.projectApiKey,
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + context.state.projectApiKey,
         {
           method: "POST",
           body: JSON.stringify({

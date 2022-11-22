@@ -1,4 +1,4 @@
-import { defineAsyncComponent } from "vue";
+// import { defineAsyncComponent } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 import Painters from "./pages/Painters.vue";
@@ -9,8 +9,10 @@ import Commission from "./pages/Commission.vue";
 import UnknownPage from "./pages/UnknownPage.vue";
 
 // 異步組件
-const PainterSetting = defineAsyncComponent(() => import("./pages/PainterSetting.vue"));
-const Register = defineAsyncComponent(() => import("./pages/Register.vue"));
+// const PainterSetting = defineAsyncComponent(() => import("./pages/PainterSetting.vue"));
+// const Register = defineAsyncComponent(() => import("./pages/Register.vue"));
+const PainterSetting = () => import("./pages/PainterSetting.vue");
+const Register = () => import("./pages/Register.vue");
 const Message = () => import("./pages/Message.vue");
 
 import store from "./store/index.js";

@@ -25,8 +25,6 @@ export default {
         })
         .then((responseData) => {
           responseData = Object.values(responseData);
-          console.log(responseData);
-          console.log(context.rootState.userId);
           context.state.commissions = responseData.filter((mes) => mes.painterId === context.rootState.userId);
           return {
             code: 200,

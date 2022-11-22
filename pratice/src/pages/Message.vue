@@ -7,7 +7,6 @@
         </a>
         <div>
           <p>{{ mes.context }}</p>
-          <BaseButton class="close-button">✖️</BaseButton>
         </div>
         <time>{{ mes.time }}</time>
       </BaseCard>
@@ -43,19 +42,13 @@ export default {
 }
 .message-card p {
   display: inline-block;
-  width: calc(100% - 2rem);
-}
-.close-button {
-  width: 2rem;
-  height: 2rem;
-  vertical-align: bottom;
-  padding: 0 !important;
-  margin: 0 !important;
+  width: 100%;
 }
 time {
   position: absolute;
   top: 1rem;
   right: 1rem;
+  color: #59a;
 }
 h2 {
   color: #558;

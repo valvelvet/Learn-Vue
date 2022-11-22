@@ -54,59 +54,63 @@
   </section>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      editing: false,
-      painter: {
-        email: "",
-        name: "",
-        description: "",
-        tags: [],
-        works: ["", "", ""],
-        avator: "",
-      },
-    };
-  },
-  computed: {
-    opctionTags() {
-      return [...this.$store.getters.tagsOpctions].map((tag) => {
-        return { ...tag, checked: this.painter.tags?.find((t) => t === tag.id) ? true : false };
-      });
-    },
-  },
-  methods: {
-    updateData(key, data) {
-      console.log(this.painter);
-      this.painter[key] = data;
-    },
-    updateWorks(key, data) {
-      this.painter.works[key] = data;
-    },
-    save() {
-      this.painter.works = this.painter.works?.filter((work) => work);
-      this.painter = {
-        ...this.painter,
-        works: this.painter.works?.filter((work) => work),
-        isEnable:
-          this.painter.avator &&
-          this.painter.description &&
-          this.painter.name &&
-          this.painter.tags.length &&
-          this.painter.works.length
-            ? true
-            : false,
-      };
-      this.$store.dispatch("updatePainterInfo", this.painter);
-      this.editing = false;
-    },
-  },
-  async created() {
-    await this.$store.dispatch("getPainters");
-    this.painter = await { ...this.$store.getters.painterInfo() };
-    console.log(this.painter);
-  },
+<script setup>
+import { ref, reactive, computed, onMounted } from "vue";
+import { useStore } from "vuex";
+const store = useStore();
+
+const editing = ref(false);
+const painter = reactive({
+  email: "",
+  name: "",
+  description: "",
+  tags: [],
+  works: ["", "", ""],
+  avator: "",
+});
+
+onMounted(async () => {
+  await store.dispatch("getPainters");
+
+  const p = await { ...store.getters.painterInfo() };
+  painter.email = p.email;
+  painter.name = p.name;
+  painter.description = p.description;
+  painter.tags = p.tags;
+  painter.works = p.works;
+  painter.avator = p.avator;
+});
+
+const opctionTags = computed(() => {
+  return [...store.getters.tagsOpctions].map((tag) => {
+    return { ...tag, checked: painter.tags?.find((t) => t === tag.id) ? true : false };
+  });
+});
+
+const updateData = (key, data) => {
+  painter[key] = data;
+};
+const updateWorks = (key, data) => {
+  painter.works[key] = data;
+};
+const save = () => {
+  painter.works = painter.works?.filter((work) => work);
+  const p = {
+    ...painter,
+    works: painter.works?.filter((work) => work),
+    isEnable:
+      painter.avator && painter.description && painter.name && painter.tags.length && painter.works.length
+        ? true
+        : false,
+  };
+  painter.email = p.email;
+  painter.name = p.name;
+  painter.description = p.description;
+  painter.tags = p.tags;
+  painter.works = p.works;
+  painter.avator = p.avator;
+  store.dispatch("updatePainterInfo", painter);
+  editing.value = false;
 };
 </script>
 
