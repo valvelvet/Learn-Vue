@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  vertical-align: middle;
+  text-decoration: none;
+  list-style: none;
+}
+
+html {
+  font-family: sans-serif;
+}
+
+body {
+}
+
+main {
+  font-size: 0;
+  background-color: #88a2;
+  margin-top: 60px;
+  padding: 2rem 0;
+  min-height: calc(100vh - 60px - 2rem);
+}
+section {
+  font-size: 16px;
+}
+
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translate(20px, 0) scale(0.9);
+}
+.list-leave-active {
+  position: absolute !important;
+}
